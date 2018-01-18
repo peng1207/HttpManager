@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class HSPBrowsePicturesVC : UIViewController {
-     /** 图片数据源 */
+    /** 图片数据源 */
     var picturesArray : Array<Any>?
     fileprivate var pictureCollectView : UICollectionView!
     fileprivate var panGesture : UIPanGestureRecognizer!
@@ -26,8 +26,11 @@ class HSPBrowsePicturesVC : UIViewController {
         super.viewDidLoad()
         self.createUI()
         self.addGesture()
+        self.viewBackgroundColor(alpha: 0.6)
     }
-    
+    /**
+     
+     */
     fileprivate func createUI() -> Void{
         pictureCollectView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewLayout())
         pictureCollectView.backgroundColor = UIColor.red
@@ -43,7 +46,7 @@ class HSPBrowsePicturesVC : UIViewController {
         self.view.addConstraint(heightConstraint)
     }
     /**
-      添加手势
+     添加手势
      */
     fileprivate func addGesture(){
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction(pan:)))
@@ -65,7 +68,7 @@ extension HSPBrowsePicturesVC{
         }
     }
     /**
-      是否往下移动
+     是否往下移动
      */
     fileprivate func isDown(point:CGPoint) -> Bool{
         if point.y > lastPoint.y{
@@ -117,22 +120,19 @@ extension HSPBrowsePicturesVC{
         }else{
             return false
         }
-        
     }
     /**
      移除view
      */
     fileprivate func removeView() {
         UIView.animate(withDuration: 0.3, animations: {
-             self.pictureCollectView.removeFromSuperview()
+            self.pictureCollectView.removeFromSuperview()
         },completion:{ (finish :Bool) in
             self.controllerPop()
         })
-        
-
     }
     /**
-        控制器移除
+     控制器移除
      */
     fileprivate func controllerPop(){
         self.dismiss(animated: false, completion: nil)
@@ -147,5 +147,10 @@ extension HSPBrowsePicturesVC{
         topConstraint.constant = 0.00
         lastPoint = CGPoint(x: 0, y: 0)
     }
-    
+    /**
+     view的背景颜色
+     */
+    fileprivate func viewBackgroundColor(alpha:CGFloat) -> Void{
+            self.view.backgroundColor = UIColor.black.withAlphaComponent(alpha)
+    }
 }
