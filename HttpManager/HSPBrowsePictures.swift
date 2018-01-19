@@ -13,27 +13,48 @@ class HSPBrowsePicturesVC : UIViewController {
     /** 图片数据源 */
     var picturesArray : Array<Any>?
     fileprivate var pictureCollectView : UICollectionView!
+    /** 移动手势 */
     fileprivate var panGesture : UIPanGestureRecognizer!
+    /** 宽度的约束 */
     fileprivate var widthConstraint : NSLayoutConstraint!
+    /** 高度的约束 */
     fileprivate var heightConstraint : NSLayoutConstraint!
+    /** 左边的约束 */
     fileprivate var leftConstraint : NSLayoutConstraint!
+    /** 顶部的约束 */
     fileprivate var topConstraint : NSLayoutConstraint!
+    /** 最小的宽度 */
     fileprivate let minWidth : CGFloat = 120
+    /** 最小的高度 */
     fileprivate let minHeight : CGFloat = 200
+    /** 保留最后一次移动的位置 */
     fileprivate var lastPoint : CGPoint! = CGPoint(x: 0, y: 0)
+    /** 颜色值的透明度 */
+    fileprivate var alpha : CGFloat = 1.00
+    /** 手势结束时 跟最小的误差值移除 */
+    fileprivate let mistakeSpace : CGFloat = 30.00
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.createUI()
         self.addGesture()
-        self.viewBackgroundColor(alpha: 0.6)
+        self.viewBackgroundColor(alpha: alpha)
     }
     /**
-     
+     添加UI
      */
     fileprivate func createUI() -> Void{
         pictureCollectView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewLayout())
-        pictureCollectView.backgroundColor = UIColor.red
+        pictureCollectView.backgroundColor = UIColor.white
         self.view.addSubview(pictureCollectView)
         pictureCollectView.translatesAutoresizingMaskIntoConstraints = false
         leftConstraint = NSLayoutConstraint(item: pictureCollectView, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: self.view, attribute: NSLayoutAttribute.left, multiplier: 1.0, constant: 0)
@@ -65,6 +86,8 @@ extension HSPBrowsePicturesVC{
             leftConstraint.constant = point.x - pictureCollectView.frame.size.width/2.0
             topConstraint.constant = point.y - pictureCollectView.frame.size.height/2.0
             lastPoint = point
+            alpha = alpha - 0.002
+            viewBackgroundColor(alpha: alpha)
         }
     }
     /**
@@ -111,7 +134,7 @@ extension HSPBrowsePicturesVC{
     fileprivate func equalPanState(pan:UIPanGestureRecognizer) -> Bool {
         if pan.state == UIGestureRecognizerState.ended || pan.state == UIGestureRecognizerState.cancelled{
             // 手势移动结束
-            if widthConstraint.constant <=  minWidth - self.view.frame.size.width + 20.00 && heightConstraint.constant <= minHeight - self.view.frame.size.height + 20.00 {
+            if widthConstraint.constant <=  minWidth - self.view.frame.size.width + mistakeSpace && heightConstraint.constant <= minHeight - self.view.frame.size.height + mistakeSpace {
                 removeView()
             }else{
                 recoveryView()
@@ -146,11 +169,12 @@ extension HSPBrowsePicturesVC{
         leftConstraint.constant = 0.00
         topConstraint.constant = 0.00
         lastPoint = CGPoint(x: 0, y: 0)
+        alpha = 1.00
     }
     /**
      view的背景颜色
      */
     fileprivate func viewBackgroundColor(alpha:CGFloat) -> Void{
-            self.view.backgroundColor = UIColor.black.withAlphaComponent(alpha)
+        self.view.backgroundColor = UIColor.black.withAlphaComponent(alpha)
     }
 }

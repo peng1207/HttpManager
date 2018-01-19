@@ -40,6 +40,7 @@
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="eNC-Sm-rNc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="EVe-Zu-SSa"/>
                             <constraint firstItem="vBZ-zC-CuV" firstAttribute="top" secondItem="7am-5j-5zv" secondAttribute="bottom" id="LAt-l9-ehk"/>

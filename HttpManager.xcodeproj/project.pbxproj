@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		044B01D920089BA700924FD3 /* HSPDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044B01D820089BA700924FD3 /* HSPDownloadManager.swift */; };
+		046952F020109A8300240798 /* HSPBrowsePictureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046952EF20109A8300240798 /* HSPBrowsePictureCell.swift */; };
 		0489D012200997CE00370D94 /* UIImageView+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0489D011200997CE00370D94 /* UIImageView+Cache.swift */; };
 		0489D0142009AFB800370D94 /* HSPImageDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0489D0132009AFB800370D94 /* HSPImageDownload.swift */; };
 		0489D016200A16AB00370D94 /* UIButton+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0489D015200A16AB00370D94 /* UIButton+Cache.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		044B01D820089BA700924FD3 /* HSPDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSPDownloadManager.swift; sourceTree = "<group>"; };
+		046952EF20109A8300240798 /* HSPBrowsePictureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSPBrowsePictureCell.swift; sourceTree = "<group>"; };
 		0489D011200997CE00370D94 /* UIImageView+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Cache.swift"; sourceTree = "<group>"; };
 		0489D0132009AFB800370D94 /* HSPImageDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSPImageDownload.swift; sourceTree = "<group>"; };
 		0489D015200A16AB00370D94 /* UIButton+Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Cache.swift"; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				0489D015200A16AB00370D94 /* UIButton+Cache.swift */,
 				0489D0132009AFB800370D94 /* HSPImageDownload.swift */,
 				04F5275D200C9353005AA099 /* HSPBrowsePictures.swift */,
+				046952EF20109A8300240798 /* HSPBrowsePictureCell.swift */,
 				04C7616D2006F16B00612D4D /* Main.storyboard */,
 				04C761702006F16B00612D4D /* Assets.xcassets */,
 				04C761722006F16B00612D4D /* LaunchScreen.storyboard */,
@@ -292,6 +295,7 @@
 				0489D012200997CE00370D94 /* UIImageView+Cache.swift in Sources */,
 				0489D016200A16AB00370D94 /* UIButton+Cache.swift in Sources */,
 				04F5275E200C9353005AA099 /* HSPBrowsePictures.swift in Sources */,
+				046952F020109A8300240798 /* HSPBrowsePictureCell.swift in Sources */,
 				0489D0142009AFB800370D94 /* HSPImageDownload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
