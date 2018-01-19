@@ -9,7 +9,10 @@
 import Foundation
 import UIKit
 
-class HSPBrowsePicturesVC : UIViewController {
+class HSPBrowsePicturesVC : UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
+   
+    
+ 
     /** 图片数据源 */
     var picturesArray : Array<Any>?
     fileprivate var pictureCollectView : UICollectionView!
@@ -33,6 +36,7 @@ class HSPBrowsePicturesVC : UIViewController {
     fileprivate var alpha : CGFloat = 1.00
     /** 手势结束时 跟最小的误差值移除 */
     fileprivate let mistakeSpace : CGFloat = 30.00
+    fileprivate let k_BrowsePictureCellIdentifier = "browsePictureCellIdentifier"
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -53,8 +57,17 @@ class HSPBrowsePicturesVC : UIViewController {
      添加UI
      */
     fileprivate func createUI() -> Void{
-        pictureCollectView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewLayout())
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = .horizontal
+        flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        flowLayout.minimumLineSpacing = 0
+        flowLayout.minimumInteritemSpacing = 0
+        pictureCollectView = UICollectionView(frame: CGRect(), collectionViewLayout: flowLayout)
         pictureCollectView.backgroundColor = UIColor.white
+        pictureCollectView.isPagingEnabled = true
+        pictureCollectView.delegate = self
+        pictureCollectView.dataSource = self
+        pictureCollectView.register(HSPBrowsePictureCell.self, forCellWithReuseIdentifier: k_BrowsePictureCellIdentifier)
         self.view.addSubview(pictureCollectView)
         pictureCollectView.translatesAutoresizingMaskIntoConstraints = false
         leftConstraint = NSLayoutConstraint(item: pictureCollectView, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: self.view, attribute: NSLayoutAttribute.left, multiplier: 1.0, constant: 0)
@@ -71,7 +84,7 @@ class HSPBrowsePicturesVC : UIViewController {
      */
     fileprivate func addGesture(){
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction(pan:)))
-        pictureCollectView.addGestureRecognizer(panGesture)
+        self.view.addGestureRecognizer(panGesture)
     }
     
 }
@@ -177,4 +190,23 @@ extension HSPBrowsePicturesVC{
     fileprivate func viewBackgroundColor(alpha:CGFloat) -> Void{
         self.view.backgroundColor = UIColor.black.withAlphaComponent(alpha)
     }
+}
+//MARK: delegate
+extension HSPBrowsePicturesVC{
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: k_BrowsePictureCellIdentifier, for: indexPath)
+        
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    //分区数
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return 1;
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: self.view.frame.size.width, height: self.view.frame.size.height)
+    }
+    
 }
