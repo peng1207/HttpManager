@@ -10,9 +10,7 @@ import Foundation
 import UIKit
 
 class HSPBrowsePicturesVC : UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
-   
-    
- 
+
     /** 图片数据源 */
     var picturesArray : Array<Any>?
     fileprivate var pictureCollectView : UICollectionView!
@@ -63,7 +61,7 @@ class HSPBrowsePicturesVC : UIViewController,UICollectionViewDelegate,UICollecti
         flowLayout.minimumLineSpacing = 0
         flowLayout.minimumInteritemSpacing = 0
         pictureCollectView = UICollectionView(frame: CGRect(), collectionViewLayout: flowLayout)
-        pictureCollectView.backgroundColor = UIColor.white
+        pictureCollectView.backgroundColor = UIColor.white.withAlphaComponent(0)
         pictureCollectView.isPagingEnabled = true
         pictureCollectView.delegate = self
         pictureCollectView.dataSource = self
@@ -99,7 +97,6 @@ extension HSPBrowsePicturesVC{
             leftConstraint.constant = point.x - pictureCollectView.frame.size.width/2.0
             topConstraint.constant = point.y - pictureCollectView.frame.size.height/2.0
             lastPoint = point
-            alpha = alpha - 0.002
             viewBackgroundColor(alpha: alpha)
         }
     }
@@ -122,10 +119,12 @@ extension HSPBrowsePicturesVC{
             // 往下
             width = widthConstraint.constant - widthSpace
             height  = heightConstraint.constant - heightSpace
+            alpha = alpha - 0.002
         }else{
             // 往上
             width = widthConstraint.constant + widthSpace
             height  = heightConstraint.constant + heightSpace
+            alpha = alpha + 0.002
         }
         
         if width > 0.00 {
@@ -139,6 +138,13 @@ extension HSPBrowsePicturesVC{
         }else if height < minHeight - self.view.frame.size.height{
             height = minHeight - self.view.frame.size.height
         }
+        
+        if alpha > 1.00{
+            alpha = 1.00
+        }else if alpha < 0.1 {
+            alpha = 0.1
+        }
+        
         return (width,height)
     }
     /**
@@ -183,19 +189,20 @@ extension HSPBrowsePicturesVC{
         topConstraint.constant = 0.00
         lastPoint = CGPoint(x: 0, y: 0)
         alpha = 1.00
+        viewBackgroundColor(alpha: alpha)
     }
     /**
      view的背景颜色
      */
     fileprivate func viewBackgroundColor(alpha:CGFloat) -> Void{
         self.view.backgroundColor = UIColor.black.withAlphaComponent(alpha)
+  
     }
 }
 //MARK: delegate
 extension HSPBrowsePicturesVC{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: k_BrowsePictureCellIdentifier, for: indexPath)
-        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -208,5 +215,4 @@ extension HSPBrowsePicturesVC{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.view.frame.size.width, height: self.view.frame.size.height)
     }
-    
 }
