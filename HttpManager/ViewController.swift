@@ -7,11 +7,16 @@
 //
 
 import UIKit
+import SwiftSocket
 
 class ViewController: UIViewController {
 
     @IBOutlet weak var imageButton: UIButton!
     @IBOutlet weak var imageView: UIImageView!
+    let host = "192.168.197.105"
+    let port = 5000
+    var client : TCPClient?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,51 +31,117 @@ class ViewController: UIViewController {
         print(url?.absoluteString as Any)
         print(url?.query as Any)
         
-        
-        let setModel = HSPHttpSetModel()
-        setModel.url = "http://baike.baidu.com/api/openapi/BaikeLemmaCardApi?scope=103&format=json&appid=379020&bk_key=swift&bk_length=600"
-//        setModel.url = "http://www.baidu.com/search?search=name"
-//        setModel.parm = ["id":"qw","name":"name","subName":"#中文","duoKey":["1","2","3"],"key2":["key1":"1","key2":"2"]]
-        setModel.httpMethod = HSPHttpMethod.post
-//        _ = HSPHttpManager.request(httpSet: setModel, success: { (response:Data?) in
-//
-//            let json = try? JSONSerialization.jsonObject(with: response!, options: JSONSerialization.ReadingOptions.mutableContainers)
-//            print("json is \(String(describing: json))")
-//
-//        },failure: { (error:Error?) in
-//            print(error as Any)
-//        })
-
-//        download(num: "1")
-//        download(num: "2")
-//        download(num: "3")
-//        download(num: "4")
-//        download(num: "5")
-//        let imageView = UIImageView()
-        
         let string = "http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1307/23/c0/23656308_1374564438338_800x600.jpg"
-//      imageButton.setImage(UIImage.init(named: "sharebtn"), for: UIControlState.normal)
         imageButton.hsp_image(url: URL(string: string)!, state: UIControlState.normal)
           imageButton.setTitle("12", for: UIControlState.normal)
-//        imageButton.hsp_backgroundImage(url: URL(string: string)!, state: UIControlState.normal)
         imageView.hsp_image(url: URL(string: string)!)
     
         imageButton.addTarget(self, action: #selector(buttonClickAction), for: UIControlEvents.touchUpInside)
         
-//        let button = UIButton(type: UIButtonType.custom)
-//        button.frame = CGRect(x: 10, y: 260, width: 300, height: 60)
-//        button.setTitle("12", for: UIControlState.normal)
-//        button.setImage(UIImage.init(named: "sharebtn"), for: UIControlState.normal)
-//        button.setTitleColor(UIColor.red, for: UIControlState.normal)
-//
-//        self.view.addSubview(button)
+        
+        print(split(num: 17))
+        
+        let array  = [1,4,10,5,90,80,34,12,20,10]
+     
+        let sortArray =  array.sorted { (s1 : Int, s2 : Int) -> Bool in
+            return s1 > s2
+        }
+        print("\(sortArray)")
+        let resultArray =  array.map {  ( a : Int)in "\(a)?"
+        }
+        print("\(resultArray)")
+        
+        
+        
+        client = TCPClient(address: host, port: Int32(port))
         
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    /**
+     公质数
+     */
+    func  split(num : Int) -> Array<Int> {
+        var array  = Array<Int>()
+        var i = 2
+        var value = 0
+        while  i <= num  {
+            if num % i   == 0  {
+                value = num / i
+                break
+            }
+            i = i + 1
+        }
+        if value  != 0 {
+            array.append(i)
+            array += split(num: value)
+        }
+        return array
+    }
+    
     @objc func buttonClickAction() -> Void{
-        let pictureVC = HSPBrowsePicturesVC()
-        self.present(pictureVC, animated: true, completion: nil)
+        guard let client = client else {
+            return
+        }
+        imageButton.isSelected = !imageButton.isSelected
+        guard let _ = client.fd else{
+            connectClint(client: client)
+            return
+        }
+        dealButtonState(client: client)
+    }
+    /**
+     处理按钮的状态 是打开还是关闭的
+     */
+    fileprivate func dealButtonState(client:TCPClient){
+        if imageButton.isSelected {
+            if let reponse = sendRequest(string: "on1", client: client){
+                appendToTextField(string: reponse)
+            }
+        }else{
+            if let reponse = sendRequest(string: "off1", client: client){
+                appendToTextField(string: reponse)
+            }
+        }
+    }
+    
+    /**
+     连接client
+     */
+    fileprivate func connectClint(client : TCPClient){
+        
+        switch client.connect(timeout: 10) {
+        case .success:
+            if let response = sendRequest(string: "off1", client: client){
+                appendToTextField(string: response)
+            }
+        case .failure(let error):
+            appendToTextField(string: String(describing: error))
+        }
+    }
+    /**
+     发送数据
+     */
+    fileprivate func sendRequest(string:String,client: TCPClient) -> String?{
+        switch client.send(string: string){
+        case .success:
+            return readResponse(from: client)
+        case .failure(let error):
+            appendToTextField(string: String(describing: error))
+            return nil
+        }
+    }
+    /**
+     读取数据
+     */
+    fileprivate func readResponse(from client: TCPClient) -> String? {
+        guard let response = client.read(1024*10) else { return nil }
+        return String(bytes: response, encoding: .utf8)
+    }
+    /**
+     打印
+     */
+    fileprivate func appendToTextField(string: String) {
+        print(string)
     }
     
     func download(num:String){
@@ -82,8 +153,13 @@ class ViewController: UIViewController {
             print("download failure")
         })
     }
-    
-    override func didReceiveMemoryWarning() {
+    deinit {
+        guard let client = client else {
+            return
+        }
+        client.close()
+    }
+        override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }

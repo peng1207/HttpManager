@@ -28,17 +28,15 @@ class HSPDownloadManager: NSObject,URLSessionDownloadDelegate{
     }
     
     public class func download(url:URL?,progress:HSPDownloadProgress?,success:HSPDownloadSuccess?,failure:HSPDownloadFailure?) -> HSPDownloadManager?{
-        if let requestUrl = url{
-            let downloadManager = HSPDownloadManager()
-            downloadManager.initData(url: requestUrl, progress: progress, success: success, failure: failure)
-            return downloadManager
-        }else{
+        guard let requestUrl = url else {
             if let failureBlock = failure{
                 failureBlock(nil)
             }
             return nil
         }
-        
+        let downloadManager = HSPDownloadManager()
+        downloadManager.initData(url: requestUrl, progress: progress, success: success, failure: failure)
+        return downloadManager
     }
     
     override  init(){

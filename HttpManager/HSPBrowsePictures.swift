@@ -144,7 +144,6 @@ extension HSPBrowsePicturesVC{
         }else if alpha < 0.1 {
             alpha = 0.1
         }
-        
         return (width,height)
     }
     /**

@@ -17,14 +17,11 @@ class HSPHttpManager: NSObject {
      请求
      */
     class func request(httpSet:HSPHttpSetModel?,success:SuccessBlock?,failure:FailureBlock?) -> URLSessionDataTask?{
-        if httpSet == nil {
+        guard  let request = getRequest(httpSet: httpSet) else {
             return nil
         }
-        if httpSet?.url == nil{
-          return nil
-        }
-        let request = getRequest(httpSet: httpSet)
-        let sessionDataTask = URLSession.shared.dataTask(with: request!) { (repose : Data?, urlResponse : URLResponse?, error : Error?) in
+        
+        let sessionDataTask = URLSession.shared.dataTask(with: request) { (repose : Data?, urlResponse : URLResponse?, error : Error?) in
             if let datarepose = repose {
                 if let successBlock = success{
                     successBlock(datarepose)
@@ -40,13 +37,24 @@ class HSPHttpManager: NSObject {
     }
     
     fileprivate class func getRequest(httpSet:HSPHttpSetModel?) -> URLRequest? {
-        let requestURL : URL = URL(string: (httpSet?.url!)!)!
+        
+        guard let model  = httpSet else {
+            return nil
+        }
+        guard let url = model.url  else {
+            return nil
+        }
+        
+        guard   let requestURL : URL = URL(string:url) else {
+            return nil
+        }
+       
         var request : URLRequest = URLRequest(url: requestURL, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: (httpSet?.timeOut)!)
         request.httpMethod = httpSet?.httpMethod.getName()
         if HSPHttpMethodArray.contains((httpSet?.httpMethod.getName())!){
             // get head put
-            if var urlComponents = URLComponents(url: request.url!, resolvingAgainstBaseURL: false) ,let parm : Dictionary<String,Any> = httpSet?.parm, !parm.isEmpty{
-                let percentEncodedQuery = (urlComponents.percentEncodedQuery.map{$0 + "&"} ?? "") + other(parm: httpSet?.parm)
+            if var urlComponents = URLComponents(url: request.url!, resolvingAgainstBaseURL: false) ,let parm : Dictionary<String,Any> = model.parm, !parm.isEmpty{
+                let percentEncodedQuery = (urlComponents.percentEncodedQuery.map{$0 + "&"} ?? "") + other(parm: model.parm)
                 urlComponents.percentEncodedQuery = percentEncodedQuery
                 request.url = urlComponents.url
             }
